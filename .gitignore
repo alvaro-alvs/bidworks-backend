@@ -1,0 +1,44 @@
+
+
+# General
+*.pyc
+*.pyo
+__pycache__/
+*.swp
+
+# Django specific
+db.sqlite3
+migrations/
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+env/
+
+scripts/
+lib/
+include/
+pyvenv.cfg
+
+# IDEs
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Static and media files
+staticfiles/
+media/
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# Pytest
+.pytest_cache/
+
