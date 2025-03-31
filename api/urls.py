@@ -16,8 +16,8 @@ dev_urls = [
 
 #* Urls de propostas
 propostas_urls = [
-    path('listar-propostas/', ListarPropostas, name='listar-propostas'),                #* listar todas as propostas
-    path('propostas-usuario/<int:id>/', ListarPropostasUsuario, name='obter-proposta'), #* recebe o id de uma proposta
+    path('listar-propostas/', ListarPropostas, name='listar-propostas'),                #* lista todas as propostas
+    path('propostas-usuario/<int:id>/', ListarPropostasUsuario, name='obter-proposta'), #* recebe o id de um Cliente
     path('proposta/<int:id>/', GetProposta, name='obter-proposta'),                     #* recebe o id de uma proposta
 ]
 
