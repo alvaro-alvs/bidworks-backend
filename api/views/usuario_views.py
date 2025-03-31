@@ -20,7 +20,7 @@ def GetUsuario(request, id): #* recebe o ID do Usuario
         status = 'Usuario é um Cliente'
         
     if usuario_is_dev:
-        status = 'Usuário é umDev'
+        status = 'Usuário é um Dev'
         
     if usuario_is_cliente and usuario_is_dev:
         status = 'Usuário é um Dev e Cliente'
