@@ -32,4 +32,3 @@
 - Remoção de serviços nativos do Django: auth, sessions, content-type, CSRF-cookie
 - Implementação de Middleware personalizado para autenticação de tokens
 - Implementação de cache com memoria local -> futuramente implementar Redis
-- 
