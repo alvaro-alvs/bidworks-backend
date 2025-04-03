@@ -10,7 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+
+from dotenv import load_dotenv
+import os
 from pathlib import Path
+
+#* Carrega os bagui
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,30 +30,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5cpxv-7&zpmjp26jxhduaa@-g*b#k0io1(xr_h4m%c#mwd%toc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4321",  # Frontend React/Vue
+    "https://bid.work",    # Domínio em produção
+]
 
 # Application definition
 INSTALLED_APPS = [
     'api',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
 ]
 
+# Middlewares do backend
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'bidworks_backend.middleware.token_middleware.TokenAuthMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'bidworks_backend.urls'
+ROOT_URLCONF = 'bidworks_backend.urls' 
 
 TEMPLATES = [
     {
@@ -68,15 +73,37 @@ WSGI_APPLICATION = 'bidworks_backend.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# Definido como padrão PostgreSQL do supabase -> se quiser usar o SQlite em desenvolvimento, descomente a linha abaixo
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': '5432',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+    # 'bidworks-db': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'postgres',
+    #     'USER': 'postgres',
+    #     'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+    #     'HOST': os.getenv('POSTGRES_HOST'),
+    #     'PORT': '5432',
+    # }
 }
 
+# Cache configs -> Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

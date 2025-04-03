@@ -1,7 +1,7 @@
 """
 URL configuration for bidworks_backend project.
 
-O array `urlpatterns` lsita as rotas da URL para as views, usando a função path().
+O array `urlpatterns` lista as rotas da URL para as views, usando a função path([rota], view).
 
     docs:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
