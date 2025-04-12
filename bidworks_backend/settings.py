@@ -84,10 +84,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
-        'USER': 'postgres',
+        'USER': os.getenv('POSTGRES_TRANSACTION_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': '5432',
+        'HOST': os.getenv('POSTGRES_TRANSACTION_HOST'),
+        'PORT': '6543',
+        'POOL_MODE': 'transaction'
     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
