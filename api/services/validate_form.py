@@ -1,7 +1,9 @@
 
 
 
-CAMPOS_USUARIO = ['first_name', 'last_name', 'email', 'telefone', 'dn', 'password']
+CAMPOS_USUARIO = ['first_name', 'last_name', 'email', 'password']
+
+CAMPOS_MODELO = ['first_name', 'last_name', 'email', 'telefone', 'dn', 'password']
 
 #* Função de validação de formulario de Novo Usuário
 def validateForm(body, required_fields=None, min_password_length=8):

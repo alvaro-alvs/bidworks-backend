@@ -9,18 +9,20 @@ class Usuario(models.Model):
     email = models.EmailField(max_length=100, unique=True) #* este campo é unico
     telefone = models.CharField(max_length=15, null=True, blank=True) #* este campo é unico (deveria?) acho que sim
     dn = models.DateField(null=True, blank=True) #* data de nascimento
-    
+    foto = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
 
 
 #* Modelo do Cliente -> por postar propostas
 class Cliente(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='cliente_profile')
-    propostas_pagas = models.IntegerField(null=True, blank=True) #* quantidade de propostas pagas / bem-sucedidas
+    abrev = models.CharField(max_length=10, null=True, blank=True)
+    # propostas_pagas = models.IntegerField(null=True, blank=True) #* quantidade de propostas pagas / bem-sucedidas
     rate = models.FloatField(null=True, blank=True) #* adicionado campo de avaliação para o cliente também
     
-    #* as propostas do cliente são listadas no outro arquivo
+    #* As propostas do cliente são listadas no arquivo de propostas
 
 
 #* Modelo do Dev / Worker / Freelancer

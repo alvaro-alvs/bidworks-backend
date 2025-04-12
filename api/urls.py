@@ -1,8 +1,11 @@
 from django.urls import path
 
-#* API Views
+"""
+API Views -> User, Cliente e Dev
+"""
 from api.views.default_views import HealthCheck
 from api.views.usuario_views import NovoUsuario, GetUsuario
+
 from api.views.proposta_views import ListarPropostas, GetProposta, ListarPropostasUsuario
 from api.auth.generate_auth_token import GenerateAuthToken, ValidateToken
 
@@ -19,6 +22,8 @@ from api.auth.auth_usuario import LoginUsuarioOAuth, LoginUsuario
 
 cliente_urls = [
     # definir
+    # path('cliente-info/', ),
+    path('propostas-cliented/<int:id>/', ListarPropostasUsuario, name='obter-proposta'), #* recebe o id de um Cliente
 ]
 
 dev_urls = [
@@ -27,9 +32,8 @@ dev_urls = [
 
 #* Urls de propostas
 propostas_urls = [
-    path('propostas-usuario/<int:id>/', ListarPropostasUsuario, name='obter-proposta'), #* recebe o id de um Cliente
-    path('listar-propostas/', ListarPropostas, name='listar-propostas'),                #* lista todas as propostas
-    path('proposta/<int:id>/', GetProposta, name='obter-proposta'),                     #* recebe o id de uma proposta
+    path('listar-propostas/', ListarPropostas, name='listar-propostas'), #* lista todas as propostas
+    path('proposta/<int:id>/', GetProposta, name='obter-proposta'),      #* recebe o id de uma proposta
 ]
 
 #* Urls do usuario

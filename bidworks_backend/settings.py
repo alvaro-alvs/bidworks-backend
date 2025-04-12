@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+from datetime import timedelta
 
 #* Carrega os bagui
 load_dotenv()
@@ -30,13 +31,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5cpxv-7&zpmjp26jxhduaa@-g*b#k0io1(xr_h4m%c#mwd%toc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4321",  # Frontend React/Vue
-    "https://bid.work",    # Domínio em produção
+    "127.0.0.1",
 ]
 
 # Application definition
@@ -51,7 +53,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'bidworks_backend.urls' 
+
+ROOT_URLCONF = 'bidworks_backend.urls'
 
 TEMPLATES = [
     {
@@ -76,18 +79,18 @@ WSGI_APPLICATION = 'bidworks_backend.wsgi.application'
 # Definido como padrão PostgreSQL do supabase -> se quiser usar o SQlite em desenvolvimento, descomente a linha abaixo
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': '5432',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # },
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'postgres',
+    #     'USER': 'postgres',
+    #     'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+    #     'HOST': os.getenv('POSTGRES_HOST'),
+    #     'PORT': '5432',
+    # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
     # 'bidworks-db': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'postgres',
@@ -96,13 +99,6 @@ DATABASES = {
     #     'HOST': os.getenv('POSTGRES_HOST'),
     #     'PORT': '5432',
     # }
-}
-
-# Cache configs -> Redis
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-    }
 }
 
 # Password validation
