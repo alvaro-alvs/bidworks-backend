@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'bidworks_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        # 'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('POSTGRES_HOST'),
