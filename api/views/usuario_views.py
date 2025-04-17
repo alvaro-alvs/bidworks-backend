@@ -67,7 +67,21 @@ def NovoUsuario(request):
     if not senha_criada:
         return JsonResponse({'status': 'Error creating password'}, status=500)
 
-    return JsonResponse({'status': 'User created'}, status=201)
+
+    access_token = GenerateAuthToken(usuario_criado)
+
+    new_user_payload = {
+        "usuario": {
+            "first_name": usuario_criado.first_name,
+            "last_name": usuario_criado.last_name,
+                "email": usuario_criado.email,
+            },
+        "tokens": {
+            "access": access_token,
+        }
+    }
+
+    return JsonResponse(new_user_payload, status=201)
 
 
 #* recebe uma senha e o id do usuario -> cria um hash para a senha -> em seguida salva o hash no database
