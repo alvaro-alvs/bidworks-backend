@@ -83,6 +83,9 @@ def LoginUsuario(request):
 
         email = data.get('email')
         senha = data.get('password')
+        # DEBUG
+        # print(f"email: {email}, senha: {senha}")
+
         
         if not email or not senha:
             return JsonResponse({'status': 'error', 'message': 'Credenciais obrigatórias'}, status=400)
@@ -103,12 +106,13 @@ def LoginUsuario(request):
 
         # Verifica senha
         senha_bytes = senha.encode('utf-8')
-        if not bcrypt.checkpw(senha_bytes, creds.senha):
+        if not bcrypt.checkpw(senha_bytes, bytes(creds.senha)):
             return JsonResponse({'status': 'error', 'message': 'Credenciais inválidas'}, status=401)
-
 
         """
         Daqui pra baixo, a função gera e retorna o auth_token do usuario autenticado
+
+        ta errado? Ta. Mas funciona
         """
 
         #* Gera o token de acesso

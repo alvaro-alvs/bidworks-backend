@@ -39,9 +39,9 @@ def NovoUsuario(request):
         return JsonResponse({'status': 'Content-Type must be application/json'}, status=400)
 
     # Dados do formulário estão em request.body (não em request.POST)
-    form_data = json.loads(request.body).get('usuario')  # Decodifica JSON para dicionário Python
+    form_data = json.loads(request.body)  # Decodifica JSON para dicionário Python
 
-    print('form data: ', form_data) #* debug
+    # print('form data: ', form_data) #* debug
 
     #* Validação dos dados
     is_valid, error_msg = validateForm(form_data)
