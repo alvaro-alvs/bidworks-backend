@@ -5,6 +5,8 @@ from django.http import  JsonResponse
 from django.views.decorators.http import require_POST
 from api.models import usuario, credentials
 from api.services.validate_form import validateForm #* importando validador de formulario
+from api.auth.auth_usuario import GenerateAuthToken
+
 
 #* Ja da pra fazer algo no front
 def GetUsuario(request, id): #* recebe o ID do Usuario
@@ -33,56 +35,70 @@ def GetUsuario(request, id): #* recebe o ID do Usuario
 #* Cria um novo usuario e salva o hash da senha no database
 @require_POST
 def NovoUsuario(request):
-    # Verifica se o Content-Type é application/json
-    content_type = request.headers.get('Content-Type', '')
-    if 'application/json' not in content_type:
-        return JsonResponse({'status': 'Content-Type must be application/json'}, status=400)
-
-    # Dados do formulário estão em request.body (não em request.POST)
-    form_data = json.loads(request.body)  # Decodifica JSON para dicionário Python
-
-    # print('form data: ', form_data) #* debug
-
-    #* Validação dos dados
-    is_valid, error_msg = validateForm(form_data)
-    
-    if not is_valid:
-        return JsonResponse({'status': error_msg}, status=400)
-    
-    #* separação da senha
-    SENHA = form_data.get('password')
-    
-    del form_data['password']
-
-    #* Criação do usuário
     try:
-        usuario_criado = usuario.Usuario.objects.create(**form_data)
-    except Exception as e:
-        return JsonResponse({'status': str(e)}, status=400)
+        # Verifica se o Content-Type é application/json
+        content_type = request.headers.get('Content-Type', '')
+        if 'application/json' not in content_type:
+            return JsonResponse({'status': 'Content-Type must be application/json'}, status=400)
 
-    #* Geração de senha (ajuste conforme sua lógica)
-    #* gera a senha
-    senha_criada = GerarSenha(usuario=usuario_criado, senha=SENHA)
+        # Decodifica JSON do request body
+        try:
+            form_data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'Invalid JSON format'}, status=400)
 
-    if not senha_criada:
-        return JsonResponse({'status': 'Error creating password'}, status=500)
+        # Validação dos dados do formulário
+        is_valid, error_msg = validateForm(form_data)
+        if not is_valid:
+            return JsonResponse({'status': error_msg}, status=400)
 
+        # Extrai e remove senha dos dados do usuário
+        senha = form_data.pop('password', None)
+        if not senha:
+            return JsonResponse({'status': 'Password is required'}, status=400)
 
-    access_token = GenerateAuthToken(usuario_criado)
+        # Cria novo usuário
+        try:
+            novo_usuario = usuario.Usuario.objects.create(**form_data)
+        except Exception as e:
+            return JsonResponse({'status': f'Error creating user: {str(e)}'}, status=400)
 
-    new_user_payload = {
-        "usuario": {
-            "first_name": usuario_criado.first_name,
-            "last_name": usuario_criado.last_name,
-                "email": usuario_criado.email,
+        # Gera e salva senha
+        try:
+            senha_criada = GerarSenha(usuario=novo_usuario, senha=senha)
+            if not senha_criada:
+                novo_usuario.delete()
+                return JsonResponse({'status': 'Error creating password'}, status=500)
+        except Exception as e:
+            novo_usuario.delete()
+            return JsonResponse({'status': f'Error with password: {str(e)}'}, status=500)
+
+        # Gera token de acesso
+        try:
+            access_token = GenerateAuthToken(novo_usuario)
+            if not access_token:
+                novo_usuario.delete()
+                return JsonResponse({'status': 'Error generating access token'}, status=500)
+        except Exception as e:
+            novo_usuario.delete()
+            return JsonResponse({'status': f'Error with token: {str(e)}'}, status=500)
+
+        # Prepara resposta
+        response_data = {
+            "usuario": {
+                "first_name": novo_usuario.first_name,
+                "last_name": novo_usuario.last_name,
+                "email": novo_usuario.email,
             },
-        "tokens": {
-            "access": access_token,
+            "tokens": {
+                "access": access_token,
+            }
         }
-    }
 
-    return JsonResponse(new_user_payload, status=201)
+        return JsonResponse(response_data, status=201)
 
+    except Exception as e:
+        return JsonResponse({'status': f'Unexpected error: {str(e)}'}, status=500)
 
 #* recebe uma senha e o id do usuario -> cria um hash para a senha -> em seguida salva o hash no database
 def GerarSenha(usuario, senha):
